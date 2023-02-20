@@ -14,14 +14,15 @@ public class Client {
 
         try (Socket s = new Socket("localhost", 6969)) {
             out = new ObjectOutputStream(s.getOutputStream());
-            String message;
-            while ("exit".equalsIgnoreCase((message = input.nextLine()))) {
+            String text;
+            Message message;
+            while (!"exit".equalsIgnoreCase((text = input.nextLine()))) {
+                message = new Message(text);
                 out.writeObject(message);
                 out.flush();
             }
 
         } catch (IOException e) {
-            // TODO: handle exception
             e.printStackTrace();
         } finally {
             if (out != null) {
