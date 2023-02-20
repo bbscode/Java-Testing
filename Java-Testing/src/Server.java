@@ -4,33 +4,47 @@ import java.net.*;
 import java.util.Scanner;
 import java.io.*;
 import src.*;
+import java.lang.*;
 
 public class Server {
 
-    public static ObjectInputStream in;
+    public static ObjectInputStream in = null;
 
     public static void main(String[] args) throws IOException {
-        ServerSocket ss = new ServerSocket(6969);
-        ss.setReuseAddress(true);
-
-        Socket s = ss.accept();
-        System.out.println("client connected");
-        in = new ObjectInputStream(s.getInputStream());
-        Message mes = new Message(null);
+        ServerSocket server = null;
         try {
-            mes = (Message) in.readObject();
-        } catch (ClassNotFoundException e) {
-            System.out.println("Class not found");
-            System.exit(1);
-        }
-        System.out.println(mes.getText());
+            server = new ServerSocket(6969);
+            server.setReuseAddress(true);
 
-        in.close();
-        ss.close();
-        s.close();
+            while (true) {
+                Socket socket = server.accept();
+                System.out.println("client connected");
+                ClientHandler clientSocket = new ClientHandler(socket);
+                new Thread(clientSocket).start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (server != null) {
+                try {
+                    server.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
     }
 
-    private class ClientHandler implements Runnable {
+    private static class ClientHandler implements Runnable {
 
         private final Socket clientSocket;
 
@@ -40,14 +54,20 @@ public class Server {
 
         @Override
         public void run() {
-            Message mes = new Message(null);
+
             String line;
             try {
                 in = new ObjectInputStream(clientSocket.getInputStream());
-                mes = (Message) in.readObject();
-                while (mes.getText() != null) {
-
+                while (true) {
+                    try {
+                        line = (String) in.readObject();
+                        System.out.println(line);
+                    } catch (ClassNotFoundException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
