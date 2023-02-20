@@ -8,10 +8,9 @@ import java.lang.*;
 
 public class Server {
 
-    public static ObjectInputStream in = null;
-
     public static void main(String[] args) throws IOException {
         ServerSocket server = null;
+        ObjectInputStream in = null;
         try {
             server = new ServerSocket(6969);
             server.setReuseAddress(true);
@@ -47,6 +46,7 @@ public class Server {
     private static class ClientHandler implements Runnable {
 
         private final Socket clientSocket;
+        private ObjectInputStream in;
 
         public ClientHandler(Socket socket) {
             this.clientSocket = socket;
@@ -55,15 +55,14 @@ public class Server {
         @Override
         public void run() {
 
-            String line;
+            Message line;
             try {
                 in = new ObjectInputStream(clientSocket.getInputStream());
                 while (true) {
                     try {
-                        line = (String) in.readObject();
-                        System.out.println(line);
+                        line = (Message) in.readObject();
+                        System.out.println(line.getText());
                     } catch (ClassNotFoundException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
