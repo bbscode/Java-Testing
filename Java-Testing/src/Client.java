@@ -3,7 +3,6 @@ package src;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
-import src.*;
 
 public class Client {
 
@@ -21,6 +20,10 @@ public class Client {
                 out.writeObject(message);
                 out.flush();
             }
+
+            message = new Message(text);
+            out.writeObject(message);
+            out.flush();
 
         } catch (IOException e) {
             e.printStackTrace();
