@@ -1,10 +1,7 @@
 package src;
 
 import java.net.*;
-import java.util.Scanner;
 import java.io.*;
-import src.*;
-import java.lang.*;
 
 public class Server {
 
@@ -17,7 +14,7 @@ public class Server {
 
             while (true) {
                 Socket socket = server.accept();
-                System.out.println("client connected");
+                System.out.println("Client connected");
                 ClientHandler clientSocket = new ClientHandler(socket);
                 new Thread(clientSocket).start();
             }
@@ -61,7 +58,13 @@ public class Server {
                 while (true) {
                     try {
                         line = (Message) in.readObject();
-                        System.out.println(line.getText());
+                        if ("exit".equalsIgnoreCase(line.getText())) {
+                            System.out.println("Client disconnected\n");
+
+                            break;
+                        } else {
+                            System.out.println(line.getText());
+                        }
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
