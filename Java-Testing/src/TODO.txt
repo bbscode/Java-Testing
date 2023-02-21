@@ -1,0 +1,10 @@
+Store and check nicknames (Server and Client Side, maybe have public data structure in Server of clienthandlers, idk if that works)
+Add whispers (Type field in message maybe?)
+Send out messages
+    -Store Nicknames and ClientHandler Objects so we can access the 
+Send out disconnected and connect messages when user are add 
+    (<Nickname> has (dis)connected)
+
+Login Screen
+    (Prolly a subclass in client or some shit)
+Thread Client a bit maybe for . Must be able to receive messages/actions while typing a message
